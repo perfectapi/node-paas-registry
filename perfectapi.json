@@ -1,0 +1,16 @@
+{	"exports": "registry",
+	"signature": [
+		{ 
+			"name": "registerInstance",
+			"synopsis": "Register a new service instance",
+			"description": "",
+			"verb": "POST",
+			"parameter": {"name": "name", "required":"true", "description":"unique name of the service"},
+			"options": 
+				[{"option": "path", "required":"true", "description":"url path where the service endpoint can be found"},
+				 {"option": "file", "required":"true", "description":"zip file containing the service package"}
+				]
+		}
+	], 
+	"path": "paas/registry"
+}

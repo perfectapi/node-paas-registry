@@ -1,0 +1,21 @@
+{   "name":             "paas-registry"
+,   "version":          "0.0.1"
+    ,"description": "Service Registry for perfectapi self-hosted PaaS solution"
+,   "author":  {"name": "Steve Campbell", "email": "steve@perfectapi.com" }
+    ,"keywords": "paas,registry,service"
+    ,"homepage": "http://blog.perfectapi.com/2012/writing-a-paas-using-node.js-in-1-week-monday/"
+    ,"bugs": {"url": "https://github.com/perfectapi/node-paas-registry/issues", "email": "paas@perfectapi.com" }
+    ,"main": "./bin/registry.js"
+	,"bin": "./bin/registry.js"
+,   "engines": {
+        "node" : ">=0.6.5"
+    }
+,   "dependencies":    {   
+		"perfectapi": ">=0.0.14",
+    }
+,   "repository" :
+    {
+        "type" : "git",
+        "url" : "git://github.com/perfectapi/node-paas-registry.git"
+    }
+}
