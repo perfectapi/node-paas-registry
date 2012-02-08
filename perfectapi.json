@@ -5,12 +5,59 @@
 			"synopsis": "Register a new service instance",
 			"description": "",
 			"verb": "POST",
-			"parameter": {"name": "name", "required":"true", "description":"unique name of the service"},
+			"parameter": {"name": "name", "required":true, "description":"unique name of the service"},
 			"options": 
-				[{"option": "path", "required":"true", "description":"url path where the service endpoint can be found"},
-				 {"option": "file", "required":"true", "description":"zip file containing the service package"}
+				[{"option": "path", "required":true, "description":"url path where the service endpoint can be found"},
+				 {"option": "file", "required":true, "description":"zip file containing the service package"}
+				]
+		},
+		{ 
+			"name": "unregisterInstance",
+			"synopsis": "Remove an existing service instance",
+			"description": "",
+			"verb": "POST",
+			"parameter": {"name": "name", "required":true, "description":"unique name of the service"},
+			"options": 
+				[{"option": "path", "required":true, "description":"url path where the service endpoint can be found"},
+				 {"option": "host", "required":false, "description":"host name on which the service is running"}, 
+				 {"option": "port", "required":false, "description":"port on which the service is running"}
+				]
+		},
+		{ 
+			"name": "getServiceInfo",
+			"synopsis": "Retrieve info about a given service",
+			"description": "",
+			"verb": "GET",
+			"parameter": {"name": "name", "required":true, "description":"unique name of the service"}
+		},
+		{ 
+			"name": "listServices",
+			"synopsis": "Lists the existing registered service names",
+			"description": "",
+			"verb": "GET"
+		},
+		{ 
+			"name": "listUnclaimedInstances",
+			"synopsis": "Lists the service instances that are not yet claimed",
+			"description": "",
+			"verb": "GET"
+		},
+		{ 
+			"name": "claimInstance",
+			"synopsis": "Claim an existing service instance",
+			"description": "",
+			"verb": "POST",
+			"parameter": {"name": "name", "required":true, "description":"unique name of the service"},
+			"options": 
+				[{"option": "path", "required":true, "description":"url path where the service endpoint can be found"},
+				 {"option": "host", "required":true, "description":"host name on which the service is running"}, 
+				 {"option": "port", "required":true, "description":"port on which the service is running"}
 				]
 		}
 	], 
-	"path": "paas/registry"
+	"path": "paas/registry",
+	"environment": [
+		{"parameter": "REDIS_HOST", "required":true, "description":"host name of Redis server, without the port"},
+		{"parameter": "REDIS_DB_INDEX", "required":true, "default":0, "description":"DB to select in REDIS (usually 0-15, range configured in redis.conf)"}
+	]
 }
