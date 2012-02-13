@@ -1,8 +1,8 @@
 #!/usr/bin/env node
 
 var redis = require("redis");
-//var perfectapi = require('perfectapi');  
-var perfectapi = require('../../perfectapi/api.js')
+var perfectapi = require('perfectapi');  
+//var perfectapi = require('../../perfectapi/api.js')
 var path = require('path');
 var main = require('../lib/main.js');
 
