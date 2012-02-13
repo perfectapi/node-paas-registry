@@ -12,7 +12,7 @@ describe('Service Registry', function() {
       });
     })
     it('should work without error', function(done) {
-      var config = {name: "test 1", options: {path: "/api/v1", file: "asdasdasdasdbase64"}, environment: {REDIS_HOST:REDIS_HOST, REDIS_DB_INDEX:REDIS_DB_INDEX} }
+      var config = {name: "test 1", options: {path: "/api/v1", giturl: "asdasdasdasdbase64"}, environment: {REDIS_HOST:REDIS_HOST, REDIS_DB_INDEX:REDIS_DB_INDEX} }
       registry.registerInstance(config, function(err, result) {
         if (err) throw err;
         
@@ -33,13 +33,15 @@ describe('Service Registry', function() {
         var instance = result[0];
         instance.name.should.equal('test 1');
         instance.path.should.equal('/api/v1');
-        instance.should.have.property('zipFile', 'asdasdasdasdbase64');
+        instance.should.have.property('giturl', 'asdasdasdasdbase64');
+        instance.should.have.property('hostmax', 'cpus');
+        instance.should.have.property('max', 10)
         
         done();
       })
     });    
     it('should return multiple instances if multiple are registered', function(done) {
-      var config = {name: "test 1", options: {path: "/api/v1", file: "asdasdasdasdbase64"}, environment: {REDIS_HOST:REDIS_HOST, REDIS_DB_INDEX:REDIS_DB_INDEX} };
+      var config = {name: "test 1", options: {path: "/api/v1", giturl: "asdasdasdasdbase64"}, environment: {REDIS_HOST:REDIS_HOST, REDIS_DB_INDEX:REDIS_DB_INDEX} };
       registry.registerInstance(config, function(err, result) {
         if (err) throw err;
         
@@ -55,9 +57,61 @@ describe('Service Registry', function() {
     })
   })
   
+  describe('addEnvironment', function() {
+    it('should be added when it is added', function(done) {
+      var config = {variable: "X=Y", 
+        options: {path: "/api/v1"}, 
+        environment: {REDIS_HOST:REDIS_HOST, REDIS_DB_INDEX:REDIS_DB_INDEX} };
+        
+      registry.addEnvironment(config, function(err, result) {
+        if (err) throw err;
+        
+        var config2 = {name: "test 1", 
+          environment: {REDIS_HOST:REDIS_HOST, REDIS_DB_INDEX:REDIS_DB_INDEX} };
+        
+        registry.getServiceInfo(config2, function(err, result) {
+          if (err) throw err;
+          
+          result.forEach(function(service) {
+            service.should.have.property('environment')
+            service.environment.length.should.equal(1);
+            service.environment[0].name.should.equal('X');
+            service.environment[0].value.should.equal('Y');
+          })
+          
+          done();
+        })
+      })
+    })
+    
+    it('should be gone once it is removed', function(done) {
+      var config = {name: "X", 
+        options: {path: "/api/v1"}, 
+        environment: {REDIS_HOST:REDIS_HOST, REDIS_DB_INDEX:REDIS_DB_INDEX} };
+        
+      registry.removeEnvironment(config, function(err, result) {
+        if (err) throw err;
+        
+        var config2 = {name: "test 1", 
+          environment: {REDIS_HOST:REDIS_HOST, REDIS_DB_INDEX:REDIS_DB_INDEX} };
+        
+        registry.getServiceInfo(config2, function(err, result) {
+          if (err) throw err;
+          
+          result.forEach(function(service) {
+            service.should.have.property('environment')
+            service.environment.length.should.equal(0);
+          })
+          
+          done();
+        })
+      })    
+    })
+  })
+  
   describe('unregisterInstance', function() {
     it('should decrement the service instance count by 1', function(done) {
-      var config = {name: "test 1", options: {path: "/api/v1", file: "asdasdasdasdbase64"}, environment: {REDIS_HOST:REDIS_HOST, REDIS_DB_INDEX:REDIS_DB_INDEX} };
+      var config = {name: "test 1", options: {path: "/api/v1", giturl: "asdasdasdasdbase64"}, environment: {REDIS_HOST:REDIS_HOST, REDIS_DB_INDEX:REDIS_DB_INDEX} };
       registry.unregisterInstance(config, function(err, result) {
         if (err) throw err;
         
@@ -72,7 +126,7 @@ describe('Service Registry', function() {
       })
     })
     it('should do nothing when there are no matches', function(done) {
-      var config = {name: "test 1", options: {path: "/api/v1", file: "asdasdasdasdbase64"}, environment: {REDIS_HOST:REDIS_HOST, REDIS_DB_INDEX:REDIS_DB_INDEX} };
+      var config = {name: "test 1", options: {path: "/api/v1", giturl: "asdasdasdasdbase64"}, environment: {REDIS_HOST:REDIS_HOST, REDIS_DB_INDEX:REDIS_DB_INDEX} };
       registry.unregisterInstance(config, function(err, result) {
         if (err) throw err;
         //none left now.
@@ -97,7 +151,7 @@ describe('Service Registry', function() {
       })
     })
     it('should show 1 name when 1 instance', function(done) {
-      var config = {name: "test 1", options: {path: "/api/v1", file: "asdasdasdasdbase64"}, environment: {REDIS_HOST:REDIS_HOST, REDIS_DB_INDEX:REDIS_DB_INDEX} }
+      var config = {name: "test 1", options: {path: "/api/v1", giturl: "asdasdasdasdbase64"}, environment: {REDIS_HOST:REDIS_HOST, REDIS_DB_INDEX:REDIS_DB_INDEX} }
       registry.registerInstance(config, function(err, result) {
         if (err) throw err;
         
@@ -110,7 +164,7 @@ describe('Service Registry', function() {
       })      
     })
     it('should show 1 name when 2 instances of same service', function(done) {
-      var config = {name: "test 1", options: {path: "/api/v1", file: "asdasdasdasdbase64"}, environment: {REDIS_HOST:REDIS_HOST, REDIS_DB_INDEX:REDIS_DB_INDEX} }
+      var config = {name: "test 1", options: {path: "/api/v1", giturl: "asdasdasdasdbase64"}, environment: {REDIS_HOST:REDIS_HOST, REDIS_DB_INDEX:REDIS_DB_INDEX} }
       registry.registerInstance(config, function(err, result) {
         if (err) throw err;
         
@@ -123,7 +177,7 @@ describe('Service Registry', function() {
       })      
     })
     it('should show 2 names when a new service instance has a new name', function(done) {
-      var config = {name: "test 2", options: {path: "/api/v1", file: "asdasdasdasdbase64"}, environment: {REDIS_HOST:REDIS_HOST, REDIS_DB_INDEX:REDIS_DB_INDEX} }
+      var config = {name: "test 2", options: {path: "/api/v1", giturl: "asdasdasdasdbase64"}, environment: {REDIS_HOST:REDIS_HOST, REDIS_DB_INDEX:REDIS_DB_INDEX} }
       registry.registerInstance(config, function(err, result) {
         if (err) throw err;
         
@@ -166,6 +220,7 @@ describe('Service Registry', function() {
     })
   })
   
+
 })
 
 function flushDb(host, db_index, callback) {

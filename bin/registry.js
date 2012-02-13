@@ -1,8 +1,8 @@
 #!/usr/bin/env node
 
 var redis = require("redis");
-var perfectapi = require('perfectapi');  
-//var perfectapi = require('../../perfectapi/api.js')
+//var perfectapi = require('perfectapi');  
+var perfectapi = require('../../perfectapi/api.js')
 var path = require('path');
 var main = require('../lib/main.js');
 
@@ -53,6 +53,21 @@ parser.on("listUnclaimedInstances", function(config, callback) {
 parser.on("claimInstance", function(config, callback) {
   var db = getRedisClient(config);
   main.claimInstance(db, config, function(err, result) {
+    db.quit();
+    callback(err, result);
+  });
+});
+
+parser.on("addEnvironment", function(config, callback) {
+  var db = getRedisClient(config);
+  main.addEnvironment(db, config, function(err, result) {
+    db.quit();
+    callback(err, result);
+  });
+});
+parser.on("removeEnvironment", function(config, callback) {
+  var db = getRedisClient(config);
+  main.removeEnvironment(db, config, function(err, result) {
     db.quit();
     callback(err, result);
   });

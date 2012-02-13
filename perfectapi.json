@@ -8,7 +8,29 @@
 			"parameter": {"name": "name", "required":true, "description":"unique name of the service"},
 			"options": 
 				[{"option": "path", "required":true, "description":"url path where the service endpoint can be found"},
-				 {"option": "file", "required":true, "description":"zip file containing the service package"}
+				 {"option": "giturl", "required":true, "description":"url to readonly git url where the package can be found"},
+				 {"option": "hostmax", "required":false, "description":"maximum number of service instances allowed on a host, default = numCpus"},
+				 {"option": "max", "required":true, "default":10, "description":"total maximum number of service instances allowed"}
+				]
+		},
+		{
+			"name": "addEnvironment",
+			"synopsis": "Add an environment variable for a given service path",
+			"description": "Allows to set environment variables for the service",
+			"verb": "POST",
+			"parameter": {"name": "variable", "required":true, "description":"specify variable in x=y format"},
+			"options": 
+				[{"option": "path", "required":true, "description":"url path where the service endpoint can be found"}
+				]
+		},
+		{
+			"name": "removeEnvironment",
+			"synopsis": "Remove an environment variable for a given service path",
+			"description": "Allows to remove an already existing environment variables for the service",
+			"verb": "POST",
+			"parameter": {"name": "name", "required":true, "description":"variable name"},
+			"options": 
+				[{"option": "path", "required":true, "description":"url path where the service endpoint can be found"}
 				]
 		},
 		{ 
